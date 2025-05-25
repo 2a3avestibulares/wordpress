@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/yurito70/public_html/wp-content/mu-plugins/
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R wp-content/mu-plugins/* $DEPLOYPATH
+    - /bin/chmod -R 644 $DEPLOYPATH
+    - /bin/find $DEPLOYPATH -type d -exec /bin/chmod 755 {} \;
