@@ -13,20 +13,17 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
       
-    - name: 📂 Sync files via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ftp.2a3avestibulares.com
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: wp-content/mu-plugins/
-        server-dir: /
-        port: 21
-        protocol: ftp
-        timeout: 60000
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          **/.DS_Store
-          **/Thumbs.db
+    - name: 📂 Deploy via LFTP
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lftp
+        lftp -c "
+          set ftp:ssl-allow no;
+          set ftp:passive-mode yes;
+          set net:timeout 10;
+          set net:max-retries 3;
+          open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ftp.2a3avestibulares.com;
+          lcd wp-content/mu-plugins;
+          mirror --reverse --delete --verbose --exclude-glob .git* ./;
+          bye
+        "
