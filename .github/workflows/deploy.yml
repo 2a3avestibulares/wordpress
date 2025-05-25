@@ -21,6 +21,9 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: wp-content/mu-plugins/
         server-dir: /
+        port: 21
+        protocol: ftp
+        timeout: 60000
         exclude: |
           **/.git*
           **/.git*/**
